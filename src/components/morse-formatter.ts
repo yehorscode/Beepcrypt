@@ -1,21 +1,46 @@
-// Eksport funkcji do formatowania tekstu na kod Morse'a i odwrotnie
 import { morseAlphabet } from "./morse-alpfabet";
 
-export function textToMorse(text: string): string {
+export function textToMorse(text: string, alphabet: { [letter: string]: string } = morseAlphabet): string {
     return text
         .split("")
-        .map((char) => morseAlphabet[char.toLowerCase()] || char)
+        .map((char) => {
+            const morseCode = alphabet[char.toLowerCase()];
+            if (!morseCode) {
+                console.warn(`Character '${char}' not found in Morse alphabet.`);
+                return "[unknown]"; // Provide a meaningful fallback
+            }
+            return morseCode;
+        })
         .join(" ");
 }
 
-export function morseToText(morse: string): string {
+export function reverseMorseToText(morse: string, reverseAlphabet: { [code: string]: string }): string {
     return morse
         .split(" ")
-        .map(
-            (code) =>
-                Object.keys(morseAlphabet).find(
-                    (key) => morseAlphabet[key] === code
-                ) || code
-        )
+        .map((code) => {
+            const letter = reverseAlphabet[code];
+            if (!letter) {
+                console.warn(`Morse code '${code}' not found in reverse alphabet.`);
+                return "[unknown]"; // Provide a meaningful fallback
+            }
+            return letter;
+        })
+        .join("");
+}
+
+
+export function morseToText(morse: string, alphabet: { [letter: string]: string } = morseAlphabet): string {
+    return morse
+        .split(" ")
+        .map((code) => {
+            const letter = Object.entries(alphabet).find(
+                ([key, value]) => value === code
+            )?.[0];
+            if (!letter) {
+                console.warn(`Morse code '${code}' not found in alphabet.`);
+                return "[unknown]"; // Provide a meaningful fallback
+            }
+            return letter;
+        })
         .join("");
 }

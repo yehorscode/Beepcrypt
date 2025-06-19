@@ -10,8 +10,7 @@ import { Button } from "./ui/button";
 import { textToMorse, morseToText } from "./morse-formatter";
 import { playMorseSequence, stopMorsePlayback } from "./morse-player";
 import { Progress } from "./ui/progress";
-import profanity from "@/assets/filters/profanity.json";
-import { useIncrementProfanityCount } from "./increment-profanity";
+import useMaskProfanity from "./mask-profanity";
 import { Slider } from "@/components/ui/slider"
 
 export default function TranslateWindow() {
@@ -23,24 +22,10 @@ export default function TranslateWindow() {
     const [progress, setProgress] = useState(0);
     const fromText = mode === "to-morse" ? "Text" : "Morse code";
     const toText = mode === "to-morse" ? "Morse code" : "Text";
-    const progressValue = 0;
-    const [profanityCount, incrementProfanityCount] = useIncrementProfanityCount();
-    const [speed, setSpeed] = useState(0.1);
-    const maskProfanity = (text: string): string => {
-        if (!Array.isArray(profanity)) return text;
-        let masked = text;
-        let found = false;
-        for (const entry of profanity) {
-            if (!entry.match) continue;
-            const pattern = new RegExp(`\\b(${entry.match})\\b`, "gi");
-            if (pattern.test(masked)) {
-                found = true;
-            }
-            masked = masked.replace(pattern, (m: string) => "*".repeat(m.length));
-        }
-        if (found) incrementProfanityCount();
-        return masked;
-    };
+
+    const [speed, setSpeed] = useState(0.04);
+
+    const maskProfanity = useMaskProfanity();
 
     const formatFromText = () => {
         if (mode === "to-morse") {
@@ -86,6 +71,7 @@ export default function TranslateWindow() {
                     className="mt-1 h-60"
                     value={fromValue}
                     onChange={(e) => setFromValue(e.target.value)}
+                    placeholder=""
                 />
             </div>
             <div className="flex justify-center">
@@ -110,6 +96,7 @@ export default function TranslateWindow() {
                     className="mt-1 h-60"
                     value={formattedFromText}
                     onChange={(e) => setToValue(e.target.value)}
+                    placeholder=""
                 />
             </div>
             <div className="text-left mt-5">
@@ -132,7 +119,15 @@ export default function TranslateWindow() {
                 </div>
                 <div className="mt-4">
                     <span>Speed</span>
-                <Slider defaultValue={[speed * 100]} max={100} step={1} onChange={(e) => setSpeed(e / 100)}/>
+                <div>
+                <Slider
+                    value={[speed * 100]}
+                    min={1}
+                    max={10}
+                    step={1}
+                    onValueChange={([val]) => setSpeed(val / 100)}
+                />
+                </div>
                 </div>
             </div>
         </div>

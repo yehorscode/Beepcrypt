@@ -40,9 +40,9 @@ export function playMorseSequence(
             dashSound.play();
             delay = unit * 3 * 1000;
         } else if (symbol === " ") {
-            delay = unit * 5 * 1000; // przerwa między słowami
+            delay = unit * 5 * 1000;
         } else if (symbol === "/") {
-            delay = unit * 2 * 1000; // przerwa między literami
+            delay = unit * 2 * 1000;
         } else {
             delay = unit * 200;
         }
