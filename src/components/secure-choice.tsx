@@ -183,7 +183,7 @@ function LockProcedure() {
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to morselock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40">
+                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"}>
                             Hell yeah
                         </Button>
                     </div>
@@ -345,7 +345,7 @@ function UnlockProcedure() {
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to unlock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40">
+                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"}>
                             Hell yeah
                         </Button>
                     </div>
