@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./Homepage.module.scss";
-
+import { Button } from "@/components/ui/button";
 export default function Homepage() {
     const titlelist = [
         "reinvented",
@@ -65,7 +65,7 @@ export default function Homepage() {
                     <div className="w-16 h-6 bg-accent-foreground rounded-none inline-block"></div>
                 </div>
                 <br />
-                Voice chats,{" "}
+                <del>Voice chats,{" "}
                 <span
                     ref={spanRef}
                     className={`font-bold inline-block ${isExiting
@@ -76,6 +76,16 @@ export default function Homepage() {
                 >
                     {titlelist[currentTitleIndex]}
                 </span>
+                </del>
+                <br />
+                <span className="text-4xl">THE VOICE CHATS DONT WORK FOR NOW</span>
+                <br /><span>stearted with esier things, like:</span>
+                <br />
+                <br />
+                <div className="flex justify-center">
+                    <Button onClick={() => (window.location.href = "/secure")}>SECURING morse code</Button>
+                    <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/translate")}>translator</Button>
+                </div>
             </h1>
         </div>
     );
