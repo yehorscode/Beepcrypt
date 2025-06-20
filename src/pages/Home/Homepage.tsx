@@ -9,11 +9,11 @@ export default function Homepage() {
         "beep bop beep",
         "but bad",
     ];
-    const wordlist = [
-        "voice",
-        "chat",
-        "abcd"
-    ]
+    // const wordlist = [
+    //     "voice",
+    //     "chat",
+    //     "abcd"
+    // ]
     const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
     const [isExiting, setIsExiting] = useState(false);
     const spanRef = useRef<HTMLSpanElement>(null);

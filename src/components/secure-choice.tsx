@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Lock, LockOpen, Shuffle, Pause, Play } from "lucide-react";
 import { morseAlphabet } from "./morse-alpfabet";
-import { textToMorse, morseToText, reverseMorseToText } from "./morse-formatter";
+import { textToMorse, reverseMorseToText } from "./morse-formatter";
 import { playMorseSequence, stopMorsePlayback } from "./morse-player";
 import { Textarea } from "./ui/textarea";
 import useMaskProfanity from "./mask-profanity";

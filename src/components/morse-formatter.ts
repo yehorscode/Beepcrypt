@@ -34,7 +34,7 @@ export function morseToText(morse: string, alphabet: { [letter: string]: string 
         .split(" ")
         .map((code) => {
             const letter = Object.entries(alphabet).find(
-                ([key, value]) => value === code
+                ([_, value]) => value === code
             )?.[0];
             if (!letter) {
                 console.warn(`Morse code '${code}' not found in alphabet.`);
