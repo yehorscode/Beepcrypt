@@ -12,6 +12,7 @@ import {
     TooltipContent,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Button } from "./ui/button";
 
 export default function Layout() {
     const texts = [
@@ -48,7 +49,12 @@ export default function Layout() {
                             <TooltipTrigger>
                                 <NavigationMenuLink
                                     asChild
-                                    className="shadow-md shadow-red-500"
+                                    style={{
+                                        boxShadow:
+                                            theme === "dark"
+                                                ? "0px 0px 20px 1px rgba(255, 255, 255, 0.5)"
+                                                : "0px 0px 20px 1px rgba(0, 0, 0, 0.5)",
+                                    }}
                                 >
                                     <Link href="/secure">Secure morse</Link>
                                 </NavigationMenuLink>
@@ -62,12 +68,12 @@ export default function Layout() {
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                     <NavigationMenuItem className="flex justify-end">
-                        <button
+                        <Button
                             onClick={toggleTheme}
-                            className="ml-4 px-2 py-1 rounded border border-gray-400 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white transition-colors"
                             aria-label="Switch theme"
+                            variant={"outline"}
                         >
-                            {theme === "dark" ? "Dark Mode" : " Light Mode"}
+                            {theme === "dark" ? "Light Mode" : " Dark Mode"}
                             {theme === "light" ? (
                                 <span className="text-xs ml-1 dark:text-gray-500">
                                     {
@@ -79,7 +85,7 @@ export default function Layout() {
                                     }
                                 </span>
                             ) : null}
-                        </button>
+                        </Button>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
