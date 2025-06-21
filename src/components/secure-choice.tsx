@@ -256,16 +256,54 @@ function UnlockProcedure() {
     const [morseInput, setMorseInput] = useState<string>("");
     const [decodedText, setDecodedText] = useState<string>("");
     const [error, setError] = useState<string>("");
+    // Brute-force protection state
+    const [attempts, setAttempts] = useState<number>(0);
+    const [firstAttemptTime, setFirstAttemptTime] = useState<number | null>(null);
+    const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
+    const [lastFullSeed, setLastFullSeed] = useState<string>("");
+
+    // Helper: check if in cooldown
+    const isCooldown = cooldownUntil && Date.now() < cooldownUntil;
+    const cooldownLeft = isCooldown ? Math.ceil((cooldownUntil! - Date.now()) / 1000) : 0;
+
+    // Helper: handle full code change
+    function handleSeedChange(value: string) {
+        setSeed(value);
+        if (value.length === 8 && value !== lastFullSeed) {
+            setLastFullSeed(value);
+            // Only count as attempt if all 8 digits filled and changed
+            handleAttempt();
+        }
+    }
+
+    function handleAttempt() {
+        const now = Date.now();
+        if (!firstAttemptTime || now - firstAttemptTime > 60000) {
+            // Reset window if more than 1 min passed
+            setFirstAttemptTime(now);
+            setAttempts(1);
+        } else {
+            setAttempts((prev) => {
+                const newAttempts = prev + 1;
+                if (newAttempts >= 20) {
+                    setCooldownUntil(now + 10000); // 10s cooldown
+                }
+                return newAttempts;
+            });
+        }
+    }
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
-
+        if (isCooldown) {
+            setError(`Too many attempts. Wait ${cooldownLeft}s before trying again.`);
+            return;
+        }
         if (!/^\d{8}$/.test(seed)) {
             setError("Please enter an 8-digit numeric code");
             return;
         }
-
         if (!morseInput.trim()) {
             setError("Please enter Morse code to decode");
             return;
@@ -274,7 +312,6 @@ function UnlockProcedure() {
             setError("Morse code can only contain '.', '-', ' ', or '/'");
             return;
         }
-
         const seedNum = parseInt(seed);
         const morseValues = Object.values(morseAlf);
         const shuffledValues = shuffleArray(morseValues, seedNum);
@@ -287,13 +324,8 @@ function UnlockProcedure() {
         Object.entries(shuffledMorseAlphabet).forEach(([letter, code]) => {
             reverseShuffledMorse[code] = letter;
         });
-        console.log("Shuffled Morse Alphabet:", shuffledMorseAlphabet);
-        console.log("Reverse mapping:", reverseShuffledMorse);
         const normalizedMorse = morseInput.replace(/\//g, " / ").replace(/\s+/g, " ").trim();
-        console.log("Normalized Morse input:", normalizedMorse);
         const decoded = reverseMorseToText(normalizedMorse, reverseShuffledMorse);
-        console.log("Decoded text:", decoded);
-
         setDecodedText(decoded);
     };
 
@@ -322,7 +354,7 @@ function UnlockProcedure() {
                         <InputOTP
                             maxLength={8}
                             value={seed}
-                            onChange={(value) => setSeed(value)}
+                            onChange={handleSeedChange}
                             pattern={REGEXP_ONLY_DIGITS}
                         >
                             <InputOTPGroup>
@@ -341,13 +373,22 @@ function UnlockProcedure() {
                         </InputOTP>
                     </div>
                 </div>
+                {isCooldown && (
+                    <p className="text-orange-500 mt-3">
+                        Too many attempts. Wait {cooldownLeft}s before trying again.
+                    </p>
+                )}
                 {error && <p className="text-red-500 mt-3">{error}</p>}
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to unlock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"}>
+                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"} disabled={!!isCooldown}>
                             Hell yeah
                         </Button>
+                    </div>
+                    {/* Pokazuje liczbę prób w aktualnym oknie */}
+                    <div className="text-xs text-gray-400 mt-2">
+                        Attempts this minute: {attempts}/20
                     </div>
                 </div>
                 {decodedText && (

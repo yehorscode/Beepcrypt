@@ -81,6 +81,11 @@ export default function Layout() {
                             <Link href="/translate">Translate</Link>
                         </NavigationMenuLink>
                     </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <NavigationMenuLink asChild>
+                            <Link href="/leaderboard">Leaderboard</Link>
+                        </NavigationMenuLink>
+                    </NavigationMenuItem>
                     <NavigationMenuItem className="flex justify-end">
                         <Button
                             onClick={toggleTheme}

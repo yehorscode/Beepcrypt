@@ -48,6 +48,7 @@ export default function Secure() {
                     </li>
                 </ol>
                 <p className="mt-2">Other way around is basically the same, just reverse the steps (or tbh i dont really know myself)</p>
+                <span className="opacity-60">Uses profanity filter, 20 attempts per minute</span>
             </div>
             <SecureChoice />
         </div>

@@ -7,12 +7,14 @@ import morsetranslating from "@/assets/images/morsetranslator.png";
 
 export default function Homepage() {
     const titlelist = [
-        "reinvented",
         "but worse",
+        "with a leaderboard",
+        "reinvented",
         "made painful",
         "beep bop beep",
         "but bad",
         "probably secure",
+        "with insecure server"
     ];
     // const wordlist = [
     //     "voice",
@@ -90,6 +92,7 @@ export default function Homepage() {
                 <div className="flex justify-center">
                     <Button onClick={() => (window.location.href = "/secure")}>SECURE the morse code</Button>
                     <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/translate")}>translatah 4 morse code</Button>
+                    <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/leaderboard")}>see the LEADERBOARD</Button>
                 </div>
                 <Card className="mt-10">
                     <CardHeader className="flex">

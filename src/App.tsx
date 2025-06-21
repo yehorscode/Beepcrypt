@@ -7,6 +7,7 @@ import Translate from "./pages/Translator/Translate";
 import Layout from "./components/layout";
 import NotFound from "./pages/NotFound/NotFound";
 import Secure from "./pages/Secure/Secure";
+import Leaderboard from "./pages/Leaderboard/Leaderboard";
 
 export default function App() {
     return (
@@ -19,6 +20,7 @@ export default function App() {
                         <Route index element={<Homepage />} />
                         <Route path="/translate" element={<Translate />} />
                         <Route path="/secure" element={<Secure />} />
+                        <Route path="/leaderboard" element={<Leaderboard />} />
                     </Route>
                 </Routes>
             </ThemeProvider>
