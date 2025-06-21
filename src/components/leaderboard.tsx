@@ -101,9 +101,9 @@ export default function LeaderboardComponent() {
           spellCheck="false"
           aria-autocomplete="none"
         />
-        {error && <span className="text-red-500 text-sm">{error}</span>}
-        <Button type="submit" disabled={loading}>Submit score</Button>
-        <span className="text-sm text-red-500">WARNING: Your ip is hashed (unreadable) and sent to the server</span>
+        {error && <span className="text-red-500 text-sm not-dark:text-red-500">{error}</span>}
+        <Button type="submit" disabled={loading} className="dark:bg-white">Submit score</Button>
+        <span className="text-sm text-red-500 border-3 border-dashed p-2 rounded-2xl border-red-800 not-dark:border-red-500">WARNING: Your ip is hashed (unreadable) and sent to the server</span>
       </form>
       <div className="px-6 pb-6">
         <h2 className="font-semibold mb-2">Top scores</h2>

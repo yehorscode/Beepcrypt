@@ -94,7 +94,7 @@ export default function Homepage() {
                     <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/translate")}>translatah 4 morse code</Button>
                     <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/leaderboard")}>see the LEADERBOARD</Button>
                 </div>
-                <Card className="mt-10">
+                <Card className="mt-10 border-3 border-accent-foreground">
                     <CardHeader className="flex">
                         <img className="h-60 mr-4" src={morseencrypting} alt="Encrypting morse code" />
                         <div className="text-base text-left">
@@ -104,7 +104,7 @@ export default function Homepage() {
                         </div>
                     </CardHeader>
                 </Card>
-                <Card className="mt-5">
+                <Card className="mt-5 border-3 border-accent-foreground">
                     <CardHeader className="flex">
                         <img className="h-60 mr-4" src={morsetranslating} alt="Translating morse code" />
                         <div className="text-base text-left">

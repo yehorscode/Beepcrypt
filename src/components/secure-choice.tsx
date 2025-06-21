@@ -175,7 +175,7 @@ function LockProcedure() {
                             </InputOTPGroup>
                         </InputOTP>
                         <Separator orientation="vertical" />
-                        <Button className="ml-2" onClick={randomiseSeed}>
+                        <Button className="ml-2 border-2 border-green-500" onClick={randomiseSeed}>
                             <Shuffle /> Shuffle
                         </Button>
                     </div>
@@ -184,7 +184,7 @@ function LockProcedure() {
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to morselock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"}>
+                        <Button type="submit" className="mt-3 h-10 w-40 border-2 border-green-900" variant={"success"}>
                             Hell yeah
                         </Button>
                     </div>
@@ -233,6 +233,7 @@ function LockProcedure() {
                                     <Button
                                         variant="success"
                                         onClick={playSound}
+                                        className="border-2 border-green-900"
                                     >
                                         <Play />
                                         Play morse
@@ -398,7 +399,7 @@ function UnlockProcedure() {
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to unlock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40" variant={"success"} disabled={!!isCooldown}>
+                        <Button type="submit" className="mt-3 h-10 w-40 border-2 border-green-900" variant={"success"} disabled={!!isCooldown}>
                             Hell yeah
                         </Button>
                     </div>

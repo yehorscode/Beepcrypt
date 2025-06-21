@@ -94,9 +94,9 @@ export default function TranslateWindow() {
                 <Tooltip>
                     <TooltipTrigger>
                         <ArrowLeftRight
-                            size={24}
+                            size={41}
                             onClick={switchValues}
-                            className="cursor-pointer"
+                            className="cursor-pointer border-3 border-green-700 p-1 rounded-md"
                         />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -139,7 +139,7 @@ export default function TranslateWindow() {
                             Stop
                         </Button>
                     ) : (
-                        <Button className="bg-green-700 text-white" onClick={playSound}>
+                        <Button className="bg-green-700 text-white border-2 border-green-900" onClick={playSound}>
                             <Play />
                             Play morse
                         </Button>
