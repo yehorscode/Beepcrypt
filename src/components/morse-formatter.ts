@@ -7,7 +7,7 @@ export function textToMorse(text: string, alphabet: { [letter: string]: string }
             const morseCode = alphabet[char.toLowerCase()];
             if (!morseCode) {
                 console.warn(`Character '${char}' not found in Morse alphabet.`);
-                return "[unknown]"; // Provide a meaningful fallback
+                return "[unknown]"; 
             }
             return morseCode;
         })
@@ -21,7 +21,7 @@ export function reverseMorseToText(morse: string, reverseAlphabet: { [code: stri
             const letter = reverseAlphabet[code];
             if (!letter) {
                 console.warn(`Morse code '${code}' not found in reverse alphabet.`);
-                return "[unknown]"; // Provide a meaningful fallback
+                return "[unknown]"; 
             }
             return letter;
         })
@@ -33,12 +33,13 @@ export function morseToText(morse: string, alphabet: { [letter: string]: string 
     return morse
         .split(" ")
         .map((code) => {
+            if (code === "/") return " "; 
             const letter = Object.entries(alphabet).find(
                 ([_, value]) => value === code
             )?.[0];
             if (!letter) {
                 console.warn(`Morse code '${code}' not found in alphabet.`);
-                return "[unknown]"; // Provide a meaningful fallback
+                return "[unknown]"; 
             }
             return letter;
         })

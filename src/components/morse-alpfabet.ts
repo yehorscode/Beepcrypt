@@ -25,6 +25,7 @@ export const morseAlphabet: { [letter: string]: string } = {
   x: "-..-",
   y: "-.--",
   z: "--..",
-  " ": " / "
+  " ": "/",
+  "/": " "
 }
 

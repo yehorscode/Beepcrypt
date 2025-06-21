@@ -13,6 +13,8 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "./ui/button";
+import eyeofra from "@/assets/images/eyeofra.jpg";
+import sigmawolf from "@/assets/images/sigmawolf.png";
 
 export default function Layout() {
     const texts = [
@@ -73,7 +75,17 @@ export default function Layout() {
                             aria-label="Switch theme"
                             variant={"outline"}
                         >
-                            {theme === "dark" ? "Light Mode" : " Dark Mode"}
+                            {theme === "dark" ? (
+                                <>
+                                    <img src={eyeofra} alt="Light Mode Icon" className="w-4 h-4 mr-1" />
+                                    Light Mode
+                                </>
+                            ) : (
+                                <>
+                                    <img src={sigmawolf} alt="Dark Mode Icon" className="w-4 h-4 mr-1" />
+                                    Dark Mode
+                                </>
+                            )}
                             {theme === "light" ? (
                                 <span className="text-xs ml-1 dark:text-gray-500">
                                     {

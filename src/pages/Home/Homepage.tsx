@@ -1,6 +1,18 @@
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./Homepage.module.scss";
 import { Button } from "@/components/ui/button";
+import morseencrypting from "@/assets/images/morseencrypting.png";
+import morsetranslating from "@/assets/images/morsetranslator.png";
+
 export default function Homepage() {
     const titlelist = [
         "reinvented",
@@ -8,6 +20,7 @@ export default function Homepage() {
         "made painful",
         "beep bop beep",
         "but bad",
+        "probably secure",
     ];
     // const wordlist = [
     //     "voice",
@@ -65,7 +78,7 @@ export default function Homepage() {
                     <div className="w-16 h-6 bg-accent-foreground rounded-none inline-block"></div>
                 </div>
                 <br />
-                <del>Voice chats,{" "}
+                Morse code,{" "}
                 <span
                     ref={spanRef}
                     className={`font-bold inline-block ${isExiting
@@ -76,16 +89,36 @@ export default function Homepage() {
                 >
                     {titlelist[currentTitleIndex]}
                 </span>
-                </del>
                 <br />
-                <span className="text-4xl">THE VOICE CHATS DONT WORK FOR NOW</span>
-                <br /><span>stearted with esier things, like:</span>
+                <span className="text-xl">Ever wanted, to do something with your morse? Like.. <i>encrypt it?</i></span>
+                <br />
+                <span className="text-xl">Or maybe just.. listen to it? Yeaaah, you like that</span>
                 <br />
                 <br />
                 <div className="flex justify-center">
-                    <Button onClick={() => (window.location.href = "/secure")}>SECURING morse code</Button>
-                    <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/translate")}>translator</Button>
+                    <Button onClick={() => (window.location.href = "/secure")}>SECURE the morse code</Button>
+                    <Button className="inline-block ml-1" variant={"outline"} onClick={() => (window.location.href = "/translate")}>translatah 4 morse code</Button>
                 </div>
+                <Card className="mt-10">
+                    <CardHeader className="flex">
+                        <img className="h-60 mr-4" src={morseencrypting} alt="Encrypting morse code" />
+                        <div className="text-base text-left">
+                            <span>You can encrypt and decrypt morse!</span> <br />
+                            <span>Try this: --.- .. .. .-.. --- --. .. -.. code: 2137-2137</span> <br />
+                            <Button className="mt-3">Try encrypting / decrypting</Button>
+                        </div>
+                    </CardHeader>
+                </Card>
+                <Card className="mt-5">
+                    <CardHeader className="flex">
+                        <img className="h-60 mr-4" src={morsetranslating} alt="Translating morse code" />
+                        <div className="text-base text-left">
+                            <span>And now translate this!</span> <br />
+                            <span>.. ..-.  /  -.-- --- ..-  /  -.-. .- -.  /  ... . .  /  - .... .. ...  /  -- . ... ... .- --. .  /  .. -  /  -- . .- -. ...  /  - .... .- -  /  - .... .  /  - .-. .- -. ... .-.. .- - --- .-.  /  .-- --- .-. -.- ...</span> <br />
+                            <Button className="mt-3">Try translating</Button>
+                        </div>
+                    </CardHeader>
+                </Card>
             </h1>
         </div>
     );
