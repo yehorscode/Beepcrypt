@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Lock, LockOpen, Shuffle, Pause, Play } from "lucide-react";
+import { Lock, LockOpen, Shuffle, Pause, Play, CopyIcon } from "lucide-react";
 import { morseAlphabet } from "./morse-alpfabet";
 import { textToMorse, reverseMorseToText } from "./morse-formatter";
 import { playMorseSequence, stopMorsePlayback } from "./morse-player";
@@ -17,6 +17,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { Separator } from "./ui/separator";
 import { Progress } from "./ui/progress";
 import { Slider } from "./ui/slider";
+import { toast } from "sonner";
 
 export default function SecureChoice() {
     const [showLock, setShowLock] = useState(false);
@@ -194,12 +195,27 @@ function LockProcedure() {
                             Here is your complete locked morse value!
                         </h2>
                         <div className="flex justify-center mt-5">
-                            <Textarea
-                                value={morseOutput}
-                                readOnly
-                                placeholder=".-.. - .- -. -. -.-"
-                                className="max-w-md h-30"
-                            />
+                            <div className="relative w-full max-w-md">
+                                <Textarea
+                                    value={morseOutput}
+                                    readOnly
+                                    placeholder=".-.. - .- -. -. -.-"
+                                    className="h-30 pr-10"
+                                />
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    className="absolute top-2 right-2"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(morseOutput);
+                                        toast.success("Copied!");
+                                    }}
+                                    aria-label="Copy"
+                                >
+                                    <CopyIcon size={18} />
+                                </Button>
+                            </div>
                         </div>
                         <center>
                         <div className="text-left mt-10 max-w-150 flex-col justify-center">
@@ -396,13 +412,26 @@ function UnlockProcedure() {
                         <h2 className="text-xl mt-5">
                             Here is your decoded text!
                         </h2>
-                        <div className="flex justify-center">
+                        <div className="flex justify-center relative">
                             <Textarea
                                 value={decodedText}
                                 readOnly
                                 placeholder="Your decoded text"
                                 className="max-w-md h-30 mt-2"
                             />
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                className="absolute top-2 right-2"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(decodedText);
+                                    toast.success("Copied!");
+                                }}
+                                aria-label="Copy"
+                            >
+                                <CopyIcon size={18} />
+                            </Button>
                         </div>
                     </div>
                 )}
