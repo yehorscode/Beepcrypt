@@ -97,7 +97,7 @@ export default function Homepage() {
                         <div className="text-base text-left">
                             <span>You can encrypt and decrypt morse!</span> <br />
                             <span>Try this: --.- .. .. .-.. --- --. .. -.. code: 2137-2137</span> <br />
-                            <Button className="mt-3">Try encrypting / decrypting</Button>
+                            <Button className="mt-3" onClick={() => (window.location.href = "/secure")}>Try encrypting / decrypting</Button>
                         </div>
                     </CardHeader>
                 </Card>
@@ -107,7 +107,7 @@ export default function Homepage() {
                         <div className="text-base text-left">
                             <span>And now translate this!</span> <br />
                             <span>.. ..-.  /  -.-- --- ..-  /  -.-. .- -.  /  ... . .  /  - .... .. ...  /  -- . ... ... .- --. .  /  .. -  /  -- . .- -. ...  /  - .... .- -  /  - .... .  /  - .-. .- -. ... .-.. .- - --- .-.  /  .-- --- .-. -.- ...</span> <br />
-                            <Button className="mt-3">Try translating</Button>
+                            <Button onClick={() => (window.location.href = "/translate")} className="mt-3">Try translating</Button>
                         </div>
                     </CardHeader>
                 </Card>

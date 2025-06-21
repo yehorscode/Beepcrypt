@@ -34,9 +34,19 @@ export default function Layout() {
         <div className="">
             <NavigationMenu>
                 <NavigationMenuList>
+                    <Link
+                                className="font-mono font-bold flex justify-center items-center"
+                                href="/"
+                            >
+                    <span className="w-4 h-4 bg-accent-foreground rounded-full inline-block mr-2"></span>
+                    <span className="w-5 h-2 bg-accent-foreground rounded-none inline-block"></span>
+                    </Link>
                     <NavigationMenuItem>
                         <NavigationMenuLink asChild>
-                            <Link className="font-mono font-bold" href="/">
+                            <Link
+                                className="font-mono font-bold flex justify-center items-center"
+                                href="/"
+                            >
                                 Beepcrypt
                             </Link>
                         </NavigationMenuLink>
@@ -61,7 +71,9 @@ export default function Layout() {
                                     <Link href="/secure">Secure morse</Link>
                                 </NavigationMenuLink>
                             </TooltipTrigger>
-                            <TooltipContent>Not really secure but try</TooltipContent>
+                            <TooltipContent>
+                                Not really secure but try
+                            </TooltipContent>
                         </Tooltip>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
@@ -77,12 +89,20 @@ export default function Layout() {
                         >
                             {theme === "dark" ? (
                                 <>
-                                    <img src={eyeofra} alt="Light Mode Icon" className="w-4 h-4 mr-1" />
+                                    <img
+                                        src={eyeofra}
+                                        alt="Light Mode Icon"
+                                        className="w-4 h-4 mr-1"
+                                    />
                                     Light Mode
                                 </>
                             ) : (
                                 <>
-                                    <img src={sigmawolf} alt="Dark Mode Icon" className="w-4 h-4 mr-1" />
+                                    <img
+                                        src={sigmawolf}
+                                        alt="Dark Mode Icon"
+                                        className="w-4 h-4 mr-1"
+                                    />
                                     Dark Mode
                                 </>
                             )}
