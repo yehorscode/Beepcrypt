@@ -1,12 +1,4 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardHeader } from "@/components/ui/card"
 import { useEffect, useState, useRef, useCallback } from "react";
 import styles from "./Homepage.module.scss";
 import { Button } from "@/components/ui/button";
