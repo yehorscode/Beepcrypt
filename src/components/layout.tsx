@@ -27,7 +27,16 @@ export default function Layout() {
     const { theme, setTheme } = useTheme();
 
     const toggleTheme = () => {
-        setTheme(theme === "light" ? "dark" : "light");
+        if (theme === "light") setTheme("dark");
+        else if (theme === "dark") setTheme("high-contrast");
+        else if (theme === "high-contrast") setTheme("light");
+        else setTheme("light");
+    };
+
+    // Dodaj stan do lokalnego przełącznika wysokiego kontrastu
+    const isHighContrast = theme === "high-contrast";
+    const handleHighContrastToggle = () => {
+        setTheme(isHighContrast ? "light" : "high-contrast");
     };
 
     return (
@@ -86,7 +95,7 @@ export default function Layout() {
                             <Link href="/leaderboard">Leaderboard</Link>
                         </NavigationMenuLink>
                     </NavigationMenuItem>
-                    <NavigationMenuItem className="flex justify-end">
+                    <NavigationMenuItem className="flex justify-end items-center gap-2">
                         <Button
                             onClick={toggleTheme}
                             aria-label="Switch theme"
@@ -101,7 +110,7 @@ export default function Layout() {
                                     />
                                     Light Mode
                                 </>
-                            ) : (
+                            ) : theme === "light" ? (
                                 <>
                                     <img
                                         src={sigmawolf}
@@ -109,20 +118,35 @@ export default function Layout() {
                                         className="w-4 h-4 mr-1"
                                     />
                                     Dark Mode
+                                    <span className="text-xs ml-1 dark:text-gray-500">
+                                        {
+                                            texts[
+                                                Math.floor(
+                                                    Math.random() * texts.length
+                                                )
+                                            ]
+                                        }
+                                    </span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="w-4 h-4 mr-1 bg-yellow-400 border-2 border-black rounded-full inline-block"></span>
+                                    High Contrast
                                 </>
                             )}
-                            {theme === "light" ? (
-                                <span className="text-xs ml-1 dark:text-gray-500">
-                                    {
-                                        texts[
-                                            Math.floor(
-                                                Math.random() * texts.length
-                                            )
-                                        ]
-                                    }
-                                </span>
-                            ) : null}
                         </Button>
+                        {/* Mały toggle do wysokiego kontrastu */}
+                        <button
+                            type="button"
+                            aria-label="Toggle high contrast mode"
+                            onClick={handleHighContrastToggle}
+                            className={`ml-2 w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors duration-200 ${isHighContrast ? "bg-yellow-400 border-black" : "bg-transparent border-gray-400"}`}
+                            style={{ outline: isHighContrast ? "2px solid #ff00ff" : "none" }}
+                        >
+                            <span
+                                className={`block w-4 h-4 rounded-full ${isHighContrast ? "bg-black" : "bg-yellow-400 border border-black"}`}
+                            ></span>
+                        </button>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>

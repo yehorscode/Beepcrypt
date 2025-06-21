@@ -137,6 +137,58 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+.high-contrast {
+    --background: #000 !important;
+    --foreground: #fff200 !important;
+    --card: #000 !important;
+    --card-foreground: #fff200 !important;
+    --popover: #000 !important;
+    --popover-foreground: #fff200 !important;
+    --primary: #fff200 !important;
+    --primary-foreground: #000 !important;
+    --secondary: #000 !important;
+    --secondary-foreground: #fff200 !important;
+    --muted: #000 !important;
+    --muted-foreground: #fff200 !important;
+    --accent: #fff200 !important;
+    --accent-foreground: #000 !important;
+    --destructive: #fff !important;
+    --border: #fff200 !important;
+    --input: #000 !important;
+    --ring: #fff200 !important;
+    --chart-1: #fff200 !important;
+    --chart-2: #fff !important;
+    --chart-3: #fff !important;
+    --chart-4: #fff !important;
+    --chart-5: #fff !important;
+    --sidebar: #000 !important;
+    --sidebar-foreground: #fff200 !important;
+    --sidebar-primary: #fff200 !important;
+    --sidebar-primary-foreground: #000 !important;
+    --sidebar-accent: #fff200 !important;
+    --sidebar-accent-foreground: #000 !important;
+    --sidebar-border: #fff200 !important;
+    --sidebar-ring: #fff200 !important;
+}
+
+.high-contrast *, .high-contrast .card, .high-contrast .button, .high-contrast input, .high-contrast select, .high-contrast textarea {
+    outline: 1px solid #fff !important;
+    box-shadow: none !important;
+}
+
+.high-contrast a, .high-contrast button, .high-contrast input, .high-contrast select, .high-contrast textarea {
+    color: #fff200 !important;
+    background: #000 !important;
+    font-weight: bold !important;
+    text-shadow: 1px 1px 2px #000, 0 0 2px #fff200;
+}
+
+.high-contrast .badge, .high-contrast .card, .high-contrast .button {
+    background: #000 !important;
+    color: #fff200 !important;
+    border: 1px solid #fff200 !important;
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;
