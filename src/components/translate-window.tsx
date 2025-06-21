@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Textarea } from "./ui/textarea";
-import { ArrowLeftRight, Play, Pause } from "lucide-react";
+import { ArrowLeftRight, Play, Pause, Copy } from "lucide-react";
 import {
     Tooltip,
     TooltipContent,
@@ -12,6 +12,7 @@ import { playMorseSequence, stopMorsePlayback } from "./morse-player";
 import { Progress } from "./ui/progress";
 import useMaskProfanity from "./mask-profanity";
 import { Slider } from "@/components/ui/slider"
+import { toast } from "sonner";
 
 export default function TranslateWindow() {
     const [fromValue, setFromValue] = useState("");
@@ -67,12 +68,27 @@ export default function TranslateWindow() {
                 <span className="text-accent-foreground font-medium">
                     {fromText}
                 </span>
-                <Textarea
-                    className="mt-1 h-60"
-                    value={fromValue}
-                    onChange={(e) => setFromValue(e.target.value)}
-                    placeholder=""
-                />
+                <div className="relative mt-1">
+                    <Textarea
+                        className="h-60 pr-10"
+                        value={fromValue}
+                        onChange={(e) => setFromValue(e.target.value)}
+                        placeholder=""
+                    />
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                            navigator.clipboard.writeText(fromValue);
+                            toast.success("Copied!");
+                        }}
+                        aria-label="Copy"
+                    >
+                        <Copy size={18} />
+                    </Button>
+                </div>
             </div>
             <div className="flex justify-center">
                 <Tooltip>
@@ -92,12 +108,27 @@ export default function TranslateWindow() {
                 <span className="text-accent-foreground font-medium">
                     {toText}
                 </span>
-                <Textarea
-                    className="mt-1 h-60"
-                    value={formattedFromText}
-                    onChange={(e) => setToValue(e.target.value)}
-                    placeholder=""
-                />
+                <div className="relative mt-1">
+                    <Textarea
+                        className="h-60 pr-10"
+                        value={formattedFromText}
+                        onChange={(e) => setToValue(e.target.value)}
+                        placeholder=""
+                    />
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="ghost"
+                        className="absolute top-2 right-2"
+                        onClick={() => {
+                            navigator.clipboard.writeText(formattedFromText);
+                            toast.success("Copied!");
+                        }}
+                        aria-label="Copy"
+                    >
+                        <Copy size={18} />
+                    </Button>
+                </div>
             </div>
             <div className="text-left mt-5">
                 <h1 className="font-medium text-2xl mb-2">Tools</h1>
