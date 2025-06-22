@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Textarea } from "./ui/textarea";
 import { ArrowLeftRight, Play, Pause, Copy } from "lucide-react";
 import {
@@ -82,16 +82,51 @@ export default function TranslateWindow() {
         }
     }, [selectedPreset]);
 
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingOutput, setTypingOutput] = useState("");
+    const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+    const typingSymbols = ["@", "#", "$", "%", "1", "#"];
+
+    // Funkcja generująca losowe symbole dla każdego znaku wyjściowego
+    function getRandomTypingOutput(length: number) {
+        let out = "";
+        for (let i = 0; i < length; i++) {
+            out += typingSymbols[Math.floor(Math.random() * typingSymbols.length)];
+        }
+        return out;
+    }
+
+    // Modyfikacja onChange dla fromValue
+    const handleFromValueChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setFromValue(e.target.value);
+        setIsTyping(true);
+        if (typingTimeout.current) clearTimeout(typingTimeout.current);
+        // Ustaw animację na 300ms
+        setTypingOutput(getRandomTypingOutput(formattedFromText.length || 8));
+        typingTimeout.current = setTimeout(() => {
+            setIsTyping(false);
+        }, 300);
+    };
+
+    // Animacja podczas pisania: aktualizuj typingOutput co 50ms
+    useEffect(() => {
+        if (!isTyping) return;
+        const interval = setInterval(() => {
+            setTypingOutput(getRandomTypingOutput(formattedFromText.length || 8));
+        }, 50);
+        return () => clearInterval(interval);
+    }, [isTyping, formattedFromText]);
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start w-full max-w-5xl mx-auto p-4">
-            <div className="flex flex-col rounded-2xl p-3 bg-zinc-900/60 shadow-md">
+            <div className="flex border flex-col rounded-2xl p-3 bg-background shadow-md relative">
                 <span className="text-accent-foreground font-medium mb-2">
                     {fromText}
                 </span>
                 <Textarea
-                    className="h-60 pr-10 bg-zinc-800 text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700"
+                    className="h-60 pr-10 text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700"
                     value={fromValue}
-                    onChange={(e) => setFromValue(e.target.value)}
+                    onChange={handleFromValueChange}
                     placeholder={mode === "to-morse" ? "Type your text here..." : "Type morse code (.-/--)"}
                 />
                 <Button
@@ -122,15 +157,16 @@ export default function TranslateWindow() {
                     </TooltipContent>
                 </Tooltip>
             </div>
-            <div className="flex flex-col rounded-2xl p-3 bg-zinc-900/60 shadow-md">
+            <div className="flex border flex-col rounded-2xl p-3 bg-background shadow-md relative">
                 <span className="text-accent-foreground font-medium mb-2">
                     {toText}
                 </span>
                 <Textarea
-                    className="h-60 pr-10 bg-zinc-800 text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700"
-                    value={formattedFromText}
+                    className={`h-60 pr-10  text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700 ${isTyping ? "animate-glow-output" : ""}`}
+                    value={isTyping ? typingOutput : formattedFromText}
                     onChange={(e) => setToValue(e.target.value)}
                     placeholder={mode === "to-morse" ? "Morse code output..." : "Text output..."}
+                    readOnly={isTyping}
                 />
                 <Button
                     type="button"
@@ -146,13 +182,12 @@ export default function TranslateWindow() {
                     <Copy size={18} />
                 </Button>
             </div>
-            {/* UI narzędzi i presetów na dole */}
             <div className="col-span-1 md:col-span-3 mt-8 w-full flex flex-col items-center gap-6">
                 <div className="w-full flex flex-col md:flex-row gap-4 items-center justify-center">
-                    <div className="flex flex-col gap-2 bg-zinc-900/60 rounded-xl p-3 shadow w-full md:w-1/2">
+                    <div className="flex flex-col gap-2 rounded-xl p-3 shadow w-full md:w-1/2">
                         <span className="font-semibold text-lg mb-1">Sound Preset</span>
                         <select
-                            className="bg-zinc-800 text-white rounded px-2 py-1 border border-zinc-700 focus:ring-2 focus:ring-green-700"
+                            className=" rounded px-2 py-1 border focus:ring-2 focus:ring-green-700"
                             value={selectedPreset}
                             onChange={e => setSelectedPreset(Number(e.target.value))}
                         >
@@ -160,7 +195,7 @@ export default function TranslateWindow() {
                                 <option value={idx} key={preset.name}>{preset.name}</option>
                             ))}
                         </select>
-                        <span className="text-xs text-zinc-400">Or upload your own:</span>
+                        <span className="text-xs">Or upload your own:</span>
                         <CustomSoundSelector
                             customDot={customDot}
                             setCustomDot={setCustomDot}
@@ -169,12 +204,12 @@ export default function TranslateWindow() {
                             />
                             <Tooltip delayDuration={500}>
                                 <TooltipTrigger asChild>
-                                    <span className="text-xs text-zinc-400 cursor-help hover:underline">How to contribute sounds</span>
+                                    <span className="text-xs cursor-help hover:underline">How to contribute sounds</span>
                                 </TooltipTrigger>
                                 <TooltipContent side="bottom">
-                                    <div className="bg-zinc-900 p-3 rounded-md shadow-lg">
-                                        <p className="text-white font-semibold">Want to contribute custom sounds?</p>
-                                        <p className="text-white mt-1">
+                                    <div className="p-3 rounded-md shadow-lg">
+                                        <p className=" font-semibold">Want to contribute custom sounds?</p>
+                                        <p className=" mt-1">
                                             Record your own dot and dash sounds and submit them via
                                             <a
                                                 href="https://github.com/yehorscode/beepcrypt/issues/new"

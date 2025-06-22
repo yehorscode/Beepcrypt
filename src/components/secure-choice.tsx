@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "./ui/button";
 import { Lock, LockOpen, Shuffle, Pause, Play, CopyIcon } from "lucide-react";
 import { morseAlphabet } from "./morse-alpfabet";
@@ -18,6 +18,8 @@ import { Separator } from "./ui/separator";
 import { Progress } from "./ui/progress";
 import { Slider } from "./ui/slider";
 import { toast } from "sonner";
+import { soundPresets } from "../assets/sound_presets/custom-presets";
+import { CustomSoundSelector } from "./custom-sound-selector";
 
 export default function SecureChoice() {
     const [showLock, setShowLock] = useState(false);
@@ -68,6 +70,20 @@ function LockProcedure() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
     const [speed, setSpeed] = useState(0.04);
+    const [selectedPreset, setSelectedPreset] = useState(0);
+    const [customDot, setCustomDot] = useState<File | null>(null);
+    const [customDash, setCustomDash] = useState<File | null>(null);
+
+    useEffect(() => {
+        const preset = soundPresets[selectedPreset];
+        if (selectedPreset === 0) {
+            setCustomDot(null);
+            setCustomDash(null);
+        } else {
+            setCustomDot(preset.dot as any);
+            setCustomDash(preset.dash as any);
+        }
+    }, [selectedPreset]);
 
     function shuffleArray(array: string[], seed: number) {
         const rand = mulberry32(seed);
@@ -78,6 +94,28 @@ function LockProcedure() {
         }
         return result;
     }
+
+    // Typing animation state
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingOutput, setTypingOutput] = useState("");
+    const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+    const typingSymbols = ["@", "#", "$", "%", "1", "#"];
+
+    function getRandomTypingOutput(length: number) {
+        let out = "";
+        for (let i = 0; i < length; i++) {
+            out += typingSymbols[Math.floor(Math.random() * typingSymbols.length)];
+        }
+        return out;
+    }
+
+    useEffect(() => {
+        if (!isTyping) return;
+        const interval = setInterval(() => {
+            setTypingOutput(getRandomTypingOutput(morseOutput.length || 8));
+        }, 50);
+        return () => clearInterval(interval);
+    }, [isTyping, morseOutput]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -105,7 +143,13 @@ function LockProcedure() {
         });
 
         const encoded = textToMorse(cleanText, shuffledMorseAlphabet);
-        setMorseOutput(encoded);
+        setIsTyping(true);
+        setTypingOutput(getRandomTypingOutput(encoded.length || 8));
+        if (typingTimeout.current) clearTimeout(typingTimeout.current);
+        typingTimeout.current = setTimeout(() => {
+            setIsTyping(false);
+            setMorseOutput(encoded);
+        }, 300);
     };
 
     function randomiseSeed() {
@@ -123,7 +167,9 @@ function LockProcedure() {
             speed,
             undefined,
             setIsPlaying,
-            setProgress
+            setProgress,
+            customDot,
+            customDash
         );
     }
 
@@ -175,7 +221,10 @@ function LockProcedure() {
                             </InputOTPGroup>
                         </InputOTP>
                         <Separator orientation="vertical" />
-                        <Button className="ml-2 border-2 border-green-500" onClick={randomiseSeed}>
+                        <Button
+                            className="ml-2 border-2 border-green-500"
+                            onClick={randomiseSeed}
+                        >
                             <Shuffle /> Shuffle
                         </Button>
                     </div>
@@ -184,7 +233,11 @@ function LockProcedure() {
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to morselock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40 border-2 border-green-900" variant={"success"}>
+                        <Button
+                            type="submit"
+                            className="mt-3 h-10 w-40 border-2 border-green-900"
+                            variant={"success"}
+                        >
                             Hell yeah
                         </Button>
                     </div>
@@ -197,66 +250,101 @@ function LockProcedure() {
                         <div className="flex justify-center mt-5">
                             <div className="relative w-full max-w-md">
                                 <Textarea
-                                    value={morseOutput}
+                                    value={isTyping ? typingOutput : morseOutput}
                                     readOnly
                                     placeholder=".-.. - .- -. -. -.-"
-                                    className="h-30 pr-10"
+                                    className={`h-30 pr-10 ${isTyping ? "animate-glow-output" : ""}`}
                                 />
-                                <Button
-                                    type="button"
-                                    size="icon"
-                                    variant="ghost"
-                                    className="absolute top-2 right-2"
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(morseOutput);
-                                        toast.success("Copied!");
-                                    }}
-                                    aria-label="Copy"
-                                >
-                                    <CopyIcon size={18} />
-                                </Button>
+                                <div className="absolute top-2 right-2 z-10">
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(morseOutput);
+                                            toast.success("Copied!");
+                                        }}
+                                        aria-label="Copy"
+                                        disabled={isTyping}
+                                    >
+                                        <CopyIcon size={18} />
+                                    </Button>
+                                </div>
                             </div>
                         </div>
                         <center>
-                        <div className="text-left mt-10 max-w-150 flex-col justify-center">
-                            <h1 className="font-medium text-2xl mb-2">Tools</h1>
-                            <div className="flex gap-2">
-                                {isPlaying ? (
-                                    <Button
-                                        variant="destructive"
-                                        onClick={stopSound}
-                                    >
-                                        <Pause />
-                                        Stop
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        variant="success"
-                                        onClick={playSound}
-                                        className="border-2 border-green-900"
-                                    >
-                                        <Play />
-                                        Play morse
-                                    </Button>
-                                )}
+                            <div className="text-left mt-10 max-w-150 flex-col justify-center">
+                                <h1 className="font-medium text-2xl mb-2">
+                                    Tools
+                                </h1>
+                                <div className="flex gap-2">
+                                    {isPlaying ? (
+                                        <Button
+                                            variant="destructive"
+                                            onClick={stopSound}
+                                        >
+                                            <Pause />
+                                            Stop
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="success"
+                                            onClick={playSound}
+                                            className="border-2 border-green-900"
+                                        >
+                                            <Play />
+                                            Play morse
+                                        </Button>
+                                    )}
+                                </div>
+                                <div className="mt-4">
+                                    <Progress value={progress * 100} />
+                                </div>
+                                <div className="mt-4">
+                                    <span className="mr-2">Speed</span>
+                                    <Slider
+                                        value={[speed * 100]}
+                                        min={1}
+                                        max={10}
+                                        step={1}
+                                        onValueChange={([val]) =>
+                                            setSpeed(val / 100)
+                                        }
+                                    />
+                                </div>
                             </div>
-                            <div className="mt-4">
-                                <Progress value={progress * 100} />
-                            </div>
-                            <div className="mt-4">
-                                <span className="mr-2">Speed</span>
-                                <Slider
-                                    value={[speed * 100]}
-                                    min={1}
-                                    max={10}
-                                    step={1}
-                                    onValueChange={([val]) =>
-                                        setSpeed(val / 100)
+                        </center>
+                        <div className="mt-5 flex flex-col items-center gap-4">
+                            <div className="flex flex-col gap-2 border rounded-xl p-3 shadow w-full max-w-md mx-auto">
+                                <span className="font-semibold text-lg mb-1">
+                                    Sound Preset
+                                </span>
+                                <select
+                                    className="bg-zinc-800 text-white rounded px-2 py-1 border border-zinc-700 focus:ring-2 focus:ring-green-700"
+                                    value={selectedPreset}
+                                    onChange={(e) =>
+                                        setSelectedPreset(
+                                            Number(e.target.value)
+                                        )
                                     }
+                                >
+                                    {soundPresets.map((preset, idx) => (
+                                        <option value={idx} key={preset.name}>
+                                            {preset.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                <span className="text-xs text-zinc-400">
+                                    Or upload your own:
+                                </span>
+                                <CustomSoundSelector
+                                    customDot={customDot}
+                                    setCustomDot={setCustomDot}
+                                    customDash={customDash}
+                                    setCustomDash={setCustomDash}
                                 />
                             </div>
                         </div>
-                        </center>
                     </div>
                 )}
             </form>
@@ -275,13 +363,23 @@ function UnlockProcedure() {
     const [error, setError] = useState<string>("");
     // Brute-force protection state
     const [attempts, setAttempts] = useState<number>(0);
-    const [firstAttemptTime, setFirstAttemptTime] = useState<number | null>(null);
+    const [firstAttemptTime, setFirstAttemptTime] = useState<number | null>(
+        null
+    );
     const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
     const [lastFullSeed, setLastFullSeed] = useState<string>("");
 
+    // Typing animation state
+    const [isTyping, setIsTyping] = useState(false);
+    const [typingOutput, setTypingOutput] = useState("");
+    const typingTimeout = useRef<NodeJS.Timeout | null>(null);
+    const typingSymbols = ["@", "#", "$", "%", "1", "#"];
+
     // Helper: check if in cooldown
     const isCooldown = cooldownUntil && Date.now() < cooldownUntil;
-    const cooldownLeft = isCooldown ? Math.ceil((cooldownUntil! - Date.now()) / 1000) : 0;
+    const cooldownLeft = isCooldown
+        ? Math.ceil((cooldownUntil! - Date.now()) / 1000)
+        : 0;
 
     // Helper: handle full code change
     function handleSeedChange(value: string) {
@@ -310,11 +408,30 @@ function UnlockProcedure() {
         }
     }
 
+    function getRandomTypingOutput(length: number) {
+        let out = "";
+        for (let i = 0; i < length; i++) {
+            out += typingSymbols[Math.floor(Math.random() * typingSymbols.length)];
+        }
+        return out;
+    }
+
+    // Animacja podczas pisania: aktualizuj typingOutput co 50ms
+    useEffect(() => {
+        if (!isTyping) return;
+        const interval = setInterval(() => {
+            setTypingOutput(getRandomTypingOutput(decodedText.length || 8));
+        }, 50);
+        return () => clearInterval(interval);
+    }, [isTyping, decodedText]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setError("");
         if (isCooldown) {
-            setError(`Too many attempts. Wait ${cooldownLeft}s before trying again.`);
+            setError(
+                `Too many attempts. Wait ${cooldownLeft}s before trying again.`
+            );
             return;
         }
         if (!/^\d{8}$/.test(seed)) {
@@ -341,10 +458,27 @@ function UnlockProcedure() {
         Object.entries(shuffledMorseAlphabet).forEach(([letter, code]) => {
             reverseShuffledMorse[code] = letter;
         });
-        const normalizedMorse = morseInput.replace(/\//g, " / ").replace(/\s+/g, " ").trim();
-        const decoded = reverseMorseToText(normalizedMorse, reverseShuffledMorse);
-        setDecodedText(decoded);
+        // NIE ruszaj spacji! Przekaż dokładnie taki ciąg, jaki wpisał użytkownik
+        const decoded = reverseMorseToText(
+            morseInput.trim(),
+            reverseShuffledMorse
+        );
+        setIsTyping(true);
+        setTypingOutput(getRandomTypingOutput(decoded.length || 8));
+        if (typingTimeout.current) clearTimeout(typingTimeout.current);
+        typingTimeout.current = setTimeout(() => {
+            setIsTyping(false);
+            setDecodedText(decoded);
+        }, 300);
     };
+
+    // Helper: format attempts info message
+    function getAttemptsInfo() {
+        if (isCooldown) {
+            return `Too many attempts. Wait ${cooldownLeft}s before trying again.`;
+        }
+        return `Attempts this minute: ${attempts}/20`;
+    }
 
     return (
         <div className="text-center">
@@ -392,47 +526,57 @@ function UnlockProcedure() {
                 </div>
                 {isCooldown && (
                     <p className="text-orange-500 mt-3">
-                        Too many attempts. Wait {cooldownLeft}s before trying again.
+                        Too many attempts. Wait {cooldownLeft}s before trying
+                        again.
                     </p>
                 )}
                 {error && <p className="text-red-500 mt-3">{error}</p>}
                 <div className="mt-5">
                     <h2 className="text-xl mt-5">3. Ready to unlock?</h2>
                     <div className="flex justify-center">
-                        <Button type="submit" className="mt-3 h-10 w-40 border-2 border-green-900" variant={"success"} disabled={!!isCooldown}>
+                        <Button
+                            type="submit"
+                            className="mt-3 h-10 w-40 border-2 border-green-900"
+                            variant={"success"}
+                            disabled={!!isCooldown}
+                        >
                             Hell yeah
                         </Button>
                     </div>
                     {/* Pokazuje liczbę prób w aktualnym oknie */}
                     <div className="text-xs text-gray-400 mt-2">
-                        Attempts this minute: {attempts}/20
+                        {getAttemptsInfo()}
                     </div>
                 </div>
                 {decodedText && (
-                    <div className="mt-5">
+                    <div className="mt-10 py-5 flex-col">
                         <h2 className="text-xl mt-5">
                             Here is your decoded text!
                         </h2>
-                        <div className="flex justify-center relative">
-                            <Textarea
-                                value={decodedText}
-                                readOnly
-                                placeholder="Your decoded text"
-                                className="max-w-md h-30 mt-2"
-                            />
-                            <Button
-                                type="button"
-                                size="icon"
-                                variant="ghost"
-                                className="absolute top-2 right-2"
-                                onClick={() => {
-                                    navigator.clipboard.writeText(decodedText);
-                                    toast.success("Copied!");
-                                }}
-                                aria-label="Copy"
-                            >
-                                <CopyIcon size={18} />
-                            </Button>
+                        <div className="flex justify-center mt-5">
+                            <div className="relative w-full max-w-md">
+                                <Textarea
+                                    value={isTyping ? typingOutput : decodedText}
+                                    readOnly
+                                    placeholder="Your decoded text"
+                                    className={`max-w-md h-30 mt-2 ${isTyping ? "animate-glow-output" : ""}`}
+                                />
+                                <div className="absolute top-2 right-2 z-10">
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(decodedText);
+                                            toast.success("Copied!");
+                                        }}
+                                        aria-label="Copy"
+                                        disabled={isTyping}
+                                    >
+                                        <CopyIcon size={18} />
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

@@ -4,3 +4,18 @@
   padding: 2rem;
   text-align: center;
 }
+
+/* Animacja glow dla outputu podczas pisania */
+.animate-glow-output {
+  box-shadow: 0 0 16px 4px #00ffae, 0 0 32px 8px #00ffae44;
+  animation: glow-output 1.2s infinite alternate;
+  transition: 1s ease;
+}
+@keyframes glow-output {
+  0% {
+    box-shadow: 0 0 8px 2px #00ffae, 0 0 16px 4px #00ffae44;
+  }
+  100% {
+    box-shadow: 0 0 24px 8px #00ffae, 0 0 48px 16px #00ffae44;
+  }
+}

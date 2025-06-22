@@ -15,17 +15,25 @@ export function textToMorse(text: string, alphabet: { [letter: string]: string }
 }
 
 export function reverseMorseToText(morse: string, reverseAlphabet: { [code: string]: string }): string {
+    // Rozdziel słowa po trzech lub więcej spacji
     return morse
-        .split(" ")
-        .map((code) => {
-            const letter = reverseAlphabet[code];
-            if (!letter) {
-                console.warn(`Morse code '${code}' not found in reverse alphabet.`);
-                return "[unknown]"; 
-            }
-            return letter;
-        })
-        .join("");
+        .split(/ {3,}/)
+        .map(word =>
+            word
+                .trim()
+                .split(/ +/)
+                .map(code => {
+                    if (code === "") return "";
+                    const letter = reverseAlphabet[code];
+                    if (!letter) {
+                        console.warn(`Morse code '${code}' not found in reverse alphabet.`);
+                        return "[unknown]";
+                    }
+                    return letter;
+                })
+                .join("")
+        )
+        .join(" ");
 }
 
 
