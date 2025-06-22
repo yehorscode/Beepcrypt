@@ -8,7 +8,8 @@ export function playMorseSequence(
     setIsPlaying?: (v: boolean) => void,
     setProgress?: (progress: number) => void,
     customDotSound?: File | string | null,
-    customDashSound?: File | string | null
+    customDashSound?: File | string | null,
+    onCharIndexChange?: (idx: number) => void // <--- DODANE
 ) {
     if (!morseString) return;
     isStopped = false;
@@ -37,7 +38,6 @@ export function playMorseSequence(
             dashAudio = null;
         }
     }
-    // fallback: jeśli nie podano customDotSound/customDashSound lub są nieprawidłowe, użyj domyślnych
     if (!dotAudio) dotAudio = new Audio('/sound_presets/beep/dot.ogg');
     if (!dashAudio) dashAudio = new Audio('/sound_presets/beep/dash.ogg');
 
@@ -45,11 +45,13 @@ export function playMorseSequence(
         if (isStopped || index >= total) {
             if (setIsPlaying) setIsPlaying(false);
             if (setProgress) setProgress(1);
+            if (onCharIndexChange) onCharIndexChange(-1); // reset po zakończeniu
             if (onEnd) onEnd();
             return;
         }
         const symbol = chars[index];
         if (setProgress) setProgress(index / total);
+        if (onCharIndexChange) onCharIndexChange(index); // <--- DODANE
         let audio: HTMLAudioElement | null = null;
         let delay = unit * 1000;
         if (symbol === ".") {

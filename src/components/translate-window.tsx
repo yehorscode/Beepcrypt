@@ -33,6 +33,8 @@ export default function TranslateWindow() {
 
     const [selectedPreset, setSelectedPreset] = useState(0);
 
+    const [currentCharIdx, setCurrentCharIdx] = useState(-1); // <--- DODANE
+
     const maskProfanity = useMaskProfanity();
 
     const formatFromText = () => {
@@ -45,6 +47,7 @@ export default function TranslateWindow() {
 
     function playSound() {
         setProgress(0);
+        setCurrentCharIdx(-1); // reset
         playMorseSequence(
             formattedFromText,
             speed,
@@ -52,13 +55,15 @@ export default function TranslateWindow() {
             setIsPlaying,
             setProgress,
             customDot,
-            customDash
+            customDash,
+            setCurrentCharIdx // <--- DODANE
         );
     }
 
     function stopSound() {
         stopMorsePlayback(setIsPlaying);
         setProgress(0);
+        setCurrentCharIdx(-1); // reset
     }
 
     const switchValues = () => {
@@ -161,13 +166,34 @@ export default function TranslateWindow() {
                 <span className="text-accent-foreground font-medium mb-2">
                     {toText}
                 </span>
-                <Textarea
-                    className={`h-60 pr-10  text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700 ${isTyping ? "animate-glow-output" : ""}`}
-                    value={isTyping ? typingOutput : formattedFromText}
-                    onChange={(e) => setToValue(e.target.value)}
-                    placeholder={mode === "to-morse" ? "Morse code output..." : "Text output..."}
-                    readOnly={isTyping}
-                />
+                {mode === "to-morse" && !isTyping ? (
+                    <div
+                        className="h-60 pr-10 text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700 bg-transparent overflow-y-auto whitespace-pre-wrap break-words p-2 text-left"
+                        style={{ minHeight: '15rem' }}
+                    >
+                        {formattedFromText.split("").map((char, idx) => (
+                            <span
+                                key={idx}
+                                className={
+                                    idx === currentCharIdx && isPlaying
+                                        ? "bg-green-600 text-white animate-pulse rounded transition-all duration-150 shadow-xl shadow-white"
+                                        : ""
+                                }
+                                style={{ transition: 'background 0.15s, color 0.15s' }}
+                            >
+                                {char}
+                            </span>
+                        ))}
+                    </div>
+                ) : (
+                    <Textarea
+                        className={`h-60 pr-10  text-lg rounded-xl border border-zinc-700 focus:ring-2 focus:ring-green-700 ${isTyping ? "animate-glow-output" : ""}`}
+                        value={isTyping ? typingOutput : formattedFromText}
+                        onChange={(e) => setToValue(e.target.value)}
+                        placeholder={mode === "to-morse" ? "Morse code output..." : "Text output..."}
+                        readOnly={isTyping}
+                    />
+                )}
                 <Button
                     type="button"
                     size="icon"
