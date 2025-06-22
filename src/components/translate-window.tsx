@@ -4,7 +4,6 @@ import { ArrowLeftRight, Play, Pause, Copy } from "lucide-react";
 import {
     Tooltip,
     TooltipContent,
-    TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "./ui/button";

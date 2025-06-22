@@ -95,7 +95,7 @@ function LockProcedure() {
         return result;
     }
 
-    // Typing animation state
+    
     const [isTyping, setIsTyping] = useState(false);
     const [typingOutput, setTypingOutput] = useState("");
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
@@ -352,8 +352,8 @@ function LockProcedure() {
     );
 }
 
-// BLOODY HELL
-// TODO: shtuff
+
+
 
 function UnlockProcedure() {
     const [morseAlf] = useState(morseAlphabet);
@@ -361,7 +361,7 @@ function UnlockProcedure() {
     const [morseInput, setMorseInput] = useState<string>("");
     const [decodedText, setDecodedText] = useState<string>("");
     const [error, setError] = useState<string>("");
-    // Brute-force protection state
+    
     const [attempts, setAttempts] = useState<number>(0);
     const [firstAttemptTime, setFirstAttemptTime] = useState<number | null>(
         null
@@ -369,24 +369,24 @@ function UnlockProcedure() {
     const [cooldownUntil, setCooldownUntil] = useState<number | null>(null);
     const [lastFullSeed, setLastFullSeed] = useState<string>("");
 
-    // Typing animation state
+    
     const [isTyping, setIsTyping] = useState(false);
     const [typingOutput, setTypingOutput] = useState("");
     const typingTimeout = useRef<NodeJS.Timeout | null>(null);
     const typingSymbols = ["@", "#", "$", "%", "1", "#"];
 
-    // Helper: check if in cooldown
+    
     const isCooldown = cooldownUntil && Date.now() < cooldownUntil;
     const cooldownLeft = isCooldown
         ? Math.ceil((cooldownUntil! - Date.now()) / 1000)
         : 0;
 
-    // Helper: handle full code change
+    
     function handleSeedChange(value: string) {
         setSeed(value);
         if (value.length === 8 && value !== lastFullSeed) {
             setLastFullSeed(value);
-            // Only count as attempt if all 8 digits filled and changed
+            
             handleAttempt();
         }
     }
@@ -394,14 +394,14 @@ function UnlockProcedure() {
     function handleAttempt() {
         const now = Date.now();
         if (!firstAttemptTime || now - firstAttemptTime > 60000) {
-            // Reset window if more than 1 min passed
+            
             setFirstAttemptTime(now);
             setAttempts(1);
         } else {
             setAttempts((prev) => {
                 const newAttempts = prev + 1;
                 if (newAttempts >= 20) {
-                    setCooldownUntil(now + 10000); // 10s cooldown
+                    setCooldownUntil(now + 10000); 
                 }
                 return newAttempts;
             });
@@ -416,7 +416,7 @@ function UnlockProcedure() {
         return out;
     }
 
-    // Animacja podczas pisania: aktualizuj typingOutput co 50ms
+    
     useEffect(() => {
         if (!isTyping) return;
         const interval = setInterval(() => {
@@ -458,7 +458,7 @@ function UnlockProcedure() {
         Object.entries(shuffledMorseAlphabet).forEach(([letter, code]) => {
             reverseShuffledMorse[code] = letter;
         });
-        // NIE ruszaj spacji! Przekaż dokładnie taki ciąg, jaki wpisał użytkownik
+        
         const decoded = reverseMorseToText(
             morseInput.trim(),
             reverseShuffledMorse
@@ -472,7 +472,7 @@ function UnlockProcedure() {
         }, 300);
     };
 
-    // Helper: format attempts info message
+    
     function getAttemptsInfo() {
         if (isCooldown) {
             return `Too many attempts. Wait ${cooldownLeft}s before trying again.`;
