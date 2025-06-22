@@ -38,7 +38,7 @@ export default function Layout() {
     };
 
     return (
-        <div className="">
+        <div className="flex flex-col">
             <NavigationMenu>
                 <NavigationMenuList>
                     <Link
