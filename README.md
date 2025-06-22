@@ -51,3 +51,27 @@ npm run dev
 ```
 
 Don't have linux? skill issue, For windows instructions r similar
+
+### ENV setup
+To run leaderboard you need to setup your env file! How to?
+Have appwrite! I don't know how to make appwrite run locally i just use the cloud one (free tier)
+
+Databases:
+    name: apps
+
+Collections:
+    scoreboard_profanity:
+        Attributes:
+            username: string, required
+            profanityCount: integer, required
+            ip: string
+
+Env file example: EXAMPLE VALUES CHANGE WITH YOURS
+```env
+VITE_APPWRITE_PROJECT_ID = "234hjb23h55h32gh23g5"
+VITE_APPWRITE_ENDPOINT = "https://fra.cloud.appwrite.io/v1"
+```
+
+## Got issues?
+Dm: @.egorro (on discord)
+Or find "yehor" with a Kiwifruit in the avatar on hackclub's slack
