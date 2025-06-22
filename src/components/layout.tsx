@@ -28,15 +28,13 @@ export default function Layout() {
 
     const toggleTheme = () => {
         if (theme === "light") setTheme("dark");
-        else if (theme === "dark") setTheme("high-contrast");
-        else if (theme === "high-contrast") setTheme("light");
         else setTheme("light");
     };
 
     // Dodaj stan do lokalnego przełącznika wysokiego kontrastu
     const isHighContrast = theme === "high-contrast";
     const handleHighContrastToggle = () => {
-        setTheme(isHighContrast ? "light" : "high-contrast");
+        setTheme(isHighContrast ? "dark" : "high-contrast");
     };
 
     return (
